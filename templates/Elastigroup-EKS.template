@@ -172,7 +172,7 @@
                     "default": "Bootstrap Arguments For EKS nodes"
                 },
                 "ExistingControlPlaneSecurityGroup": {
-                    "default": "Existing Cluster ControlPlane Security Group"
+                    "default": "Existing Cluster ControlPlane Security Group ID"
                 },
                 "QSS3BucketName": {
                     "default": "Quick Start S3 bucket name"
@@ -320,9 +320,9 @@
             "ConstraintDescription": "Must be the name of an existing EC2 KeyPair."
         },
         "ExistingNodesSecurityGroupsIds": {
-            "Type": "List<AWS::EC2::SecurityGroup::Id>",
+            "Type": "CommaDelimitedList",
             "Default": "",
-            "Description": "A comma-separated list of exsiting security group IDs."
+            "Description": "A comma-separated list of exsiting nodes security group IDs."
         },
         "NewOrExistingNodesSG": {
             "Type": "String", 
@@ -415,6 +415,7 @@
         }, 
         "ProfileRole": {
             "Type": "String", 
+            "Default": "",
             "Description": "If Using an Existing Instance Profile, provide its ARN"
         },
         "BootstrapArguments": {
@@ -423,7 +424,7 @@
             "Type": "String"
         },
         "ExistingControlPlaneSecurityGroup": {
-            "Type": "List<AWS::EC2::SecurityGroup::Id>",
+            "Type": "String",
             "Default": "",
             "Description": "EKS cluster control plane security group ID (if creating new security group for nodes with existing EKS Cluster)"
         },
@@ -914,20 +915,17 @@
                             "keyPair": {
                                 "Ref": "KeyName"
                             },
-                            "securityGroupIds": {
+                            "securityGroupIds": [{
                                 "Fn::If": [
                                     "NewSG", 
                                     {
-                                        "Fn::GetAtt": [
-                                            "NodeSecurityGroup", 
-                                            "GroupId"
-                                        ]
+                                        "Ref": "NodeSecurityGroup"
                                     }, 
                                     {
                                         "Ref": "ExistingNodesSecurityGroupsIds"
                                     }
                                 ]
-                            },
+                            }],
                             "iamRole": {
                                 "arn": {
                                     "Fn::If": [

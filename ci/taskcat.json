@@ -1,0 +1,110 @@
+[
+    {
+        "ParameterKey": "AvailabilityZones",
+        "ParameterValue": "$[taskcat_genaz_3]"
+    },
+    {
+        "ParameterKey": "CreatePrivateSubnets",
+        "ParameterValue": "true"
+    },
+    {
+        "ParameterKey": "KeyPairName",
+        "ParameterValue": "yuval"
+    },
+    {
+        "ParameterKey": "NumberOfAZs",
+        "ParameterValue": "3"
+    },
+    {
+        "ParameterKey": "BastionAMIOS",
+        "ParameterValue": "Amazon-Linux-HVM"
+    },
+    {
+        "ParameterKey": "BastionInstanceType",
+        "ParameterValue": "t2.micro"
+    },
+    {
+        "ParameterKey": "QSS3BucketName",
+        "ParameterValue": "$[taskcat_autobucket]"
+    },
+    {
+        "ParameterKey": "RemoteAccessCIDR",
+        "ParameterValue": "0.0.0.0/0"
+    },
+    {
+        "ParameterKey": "ElastigroupName",
+        "ParameterValue": "$[taskcat_random-string]"
+    },
+    {
+        "ParameterKey": "AccessToken",
+        "ParameterValue": "override"
+    },
+    {
+        "ParameterKey": "AccountID",
+        "ParameterValue": "override"
+    },
+    {
+        "ParameterKey": "ClusterOrientation",
+        "ParameterValue": "balanced"
+    },
+    {
+        "ParameterKey": "SpotPercentage",
+        "ParameterValue": "100"
+    },
+    {
+        "ParameterKey": "CapacityTarget",
+        "ParameterValue": "1"
+    },
+    {
+        "ParameterKey": "CapacityMin",
+        "ParameterValue": "0"
+    },
+    {
+        "ParameterKey": "CapacityMax",
+        "ParameterValue": "2"
+    },
+    {
+        "ParameterKey": "OnDemandInstanceType",
+        "ParameterValue": "t2.micro"
+    },
+    {
+        "ParameterKey": "SpotInstancesType",
+        "ParameterValue": "m3.large,m4.large"
+    },
+    {
+        "ParameterKey": "DetailedMonitoring",
+        "ParameterValue": "False"
+    },
+    {
+        "ParameterKey": "ProductType",
+        "ParameterValue": "Linux/UNIX"
+    },
+    {
+        "ParameterKey": "EKSName",
+        "ParameterValue": "$[taskcat_random-string]"
+    },
+    {
+        "ParameterKey": "EKSVersion",
+        "ParameterValue": "1.10"
+    },
+    {
+        "ParameterKey": "AutoScalerCooldown",
+        "ParameterValue": "180"
+    },
+    {
+        "ParameterKey": "AutoScalerEvaluationPeriods",
+        "ParameterValue": "3"
+    },
+    {
+        "ParameterKey": "AutoScalerHeadroomUnitCount",
+        "ParameterValue": "0"
+    },
+    {
+        "ParameterKey": "AutoScalerHeadroomCPU",
+        "ParameterValue": "0"
+    },
+    {
+        "ParameterKey": "AutoScalerHeadroomRAM",
+        "ParameterValue": "0"
+    }
+]

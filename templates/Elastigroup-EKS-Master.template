@@ -699,7 +699,7 @@
                     "EKSVersion": {
                         "Ref": "EKSVersion"
                     },
-                    "NewEKS": "New",
+                    "NewEKS": "New Cluster",
                     "AccessToken": {
                         "Ref": "AccessToken"
                     },
@@ -830,7 +830,9 @@
                     },
                     "EKSAMIType": {
                         "Ref": "EKSAMIType" 
-                    } 
+                    },
+                    "ExistingNodesSecurityGroupsIds": "",
+                    "ExistingControlPlaneSecurityGroup": ""
                 }
             }
         }
