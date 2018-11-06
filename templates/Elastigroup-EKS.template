@@ -1,0 +1,1042 @@
+{
+    "AWSTemplateFormatVersion": "2010-09-09",
+    "Description": "EKS cluster and Spotinst Elastigroup for the EKS nodes (qs-1osj6tpba) License: Apache 2.0 (Please do not remove) Oct,3,201",
+    "Metadata": {
+        "AWS::CloudFormation::Interface": {
+            "ParameterGroups": [
+                {
+                    "Label": {
+                        "default": "Amazon EKS configuration"
+                    },
+                    "Parameters": [
+                        "NewEKS",
+                        "EKSName",
+                        "EKSVersion",
+                        "NewOrExistingRole",
+                        "ProfileRole",
+                        "NewOrExistingNodesSG",
+                        "ExistingNodesSecurityGroupsIds",
+                        "ExistingControlPlaneSecurityGroup",
+                        "EKSAMIType",
+                        "BootstrapArguments"
+                    ]
+                },
+                {
+                    "Label": {
+                        "default": "Spotinst configuration"
+                    },
+                    "Parameters": [
+                        "AccountID",
+                        "AccessToken"
+                    ]
+                },
+                {
+                    "Label": {
+                        "default": "Elastigroup configuration"
+                    },
+                    "Parameters": [
+                        "ElastigroupName",
+                        "ClusterOrientation",
+                        "SpotPercentage",
+                        "CapacityTarget",
+                        "CapacityMin",
+                        "CapacityMax",
+                        "VPC",
+                        "OnDemandInstanceType",
+                        "SpotInstancesType",
+                        "AvailabilityZones",
+                        "SubnetIds",
+                        "DetailedMonitoring",
+                        "KeyName",
+                        "ProductType"
+                    ]
+                },
+                {
+                    "Label": {
+                        "default": "EKS autoscaler configuration"
+                    },
+                    "Parameters": [
+                        "AutoScalerEnable",
+                        "AutoScalerCooldown",
+                        "AutoScalerEvaluationPeriods",
+                        "AutoScalerHeadroomUnitCount",
+                        "AutoScalerHeadroomCPU",
+                        "AutoScalerHeadroomRAM"
+                    ]
+                },
+                {
+                    "Label": {
+                        "default": "AWS Quick Start configuration"
+                    },
+                    "Parameters": [
+                        "QSS3BucketName",
+                        "QSS3KeyPrefix"
+                    ]
+                }
+            ],
+            "ParameterLabels": {
+                "ElastigroupName": {
+                    "default": "Elastigroup name"
+                },
+                "AccessToken": {
+                    "default": "Spotinst Access Token"
+                },
+                "AccountID": {
+                    "default": "Spotinst Account ID"
+                },
+                "ClusterOrientation": {
+                    "default": "Cluster orientation"
+                },
+                "SpotPercentage": {
+                    "default": "Spot Instances percentage"
+                },
+                "CapacityTarget": {
+                    "default": "Instances capacity target"
+                },
+                "CapacityMin": {
+                    "default": "Instances capacity minimum"
+                },
+                "CapacityMax": {
+                    "default": "Instances capacity maximum"
+                },
+                "VPC": {
+                    "default": "VPC"
+                },
+                "OnDemandInstanceType": {
+                    "default": "On-Demand Instance type"
+                },
+                "SpotInstancesType": {
+                    "default": "Spot Instances type"
+                },
+                "AvailabilityZones": {
+                    "default": "Availability Zones"
+                },
+                "SubnetIds": {
+                    "default": "Subnet IDs"
+                },
+                "DetailedMonitoring": {
+                    "default": "Detailed monitoring"
+                },
+                "KeyName": {
+                    "default": "Key pair name"
+                },
+                "NewOrExistingNodesSG": {
+                    "default": "New or existing EKS Nodes Security Group"
+                },
+                "ExistingNodesSecurityGroupsIds": {
+                    "default": "Existing Nodes Security group IDs"
+                },
+                "ExistingControlPlaneSecurityGroup": {
+                    "default": "Control Plane Security group"
+                },
+                "ProductType": {
+                    "default": "Product type"
+                },
+                "EKSName": {
+                    "default": "EKS name"
+                },
+                "EKSVersion": {
+                    "default": "EKS Version"
+                },
+                "AutoScalerEnable": {
+                    "default": "Turn on EKS autoscaler"
+                },
+                "AutoScalerCooldown": {
+                    "default": "Autoscaler cooldown"
+                },
+                "AutoScalerEvaluationPeriods": {
+                    "default": "Autoscaler evaluation periods"
+                },
+                "AutoScalerHeadroomUnitCount": {
+                    "default": "Autoscaler Headroom units count"
+                },
+                "AutoScalerHeadroomCPU": {
+                    "default": "AutoScaler Headroom CPU"
+                },
+                "AutoScalerHeadroomRAM": {
+                    "default": "AutoScaler Headroom RAM"
+                },
+                "NewEKS": {
+                    "default": "New or existing EKS cluster"
+                },
+                "NewOrExistingRole": {
+                    "default": "New or existing EKS Instance Profile Role"
+                },
+                "ProfileRole": {
+                    "default": "Existing EKS Profile Role ARN"
+                },
+                "EKSAMIType": {
+                    "default": "Regular or GPU EKS AMI"
+                },
+                "BootstrapArguments": {
+                    "default": "Bootstrap Arguments For EKS nodes"
+                },
+                "ExistingControlPlaneSecurityGroup": {
+                    "default": "Existing Cluster ControlPlane Security Group"
+                },
+                "QSS3BucketName": {
+                    "default": "Quick Start S3 bucket name"
+                },
+                "QSS3KeyPrefix": {
+                    "default": "Quick Start S3 key prefix"
+                }
+            }
+        }
+    },
+    "Parameters": {
+        "ElastigroupName": {
+            "Type": "String",
+            "Description": "Name of the Elastigroup."
+        },
+        "AccessToken": {
+            "Type": "String",
+            "Description": "Spotinst API Token."
+        },
+        "AccountID": {
+            "Type": "String",
+            "Description": "Spotinst Account ID."
+        },
+        "ClusterOrientation": {
+            "Type": "String",
+            "AllowedValues": [
+                "balanced",
+                "availabilityOriented",
+                "costOriented"
+            ],
+            "Default": "balanced",
+            "Description": "The cluster orientation."
+        },
+        "SpotPercentage": {
+            "Type": "Number",
+            "MinValue": "0",
+            "MaxValue": "100",
+            "Default": "100",
+            "Description": "The percentage of Spot Instances in the cluster.",
+            "ConstraintDescription": "Select a Number Between 0 and 100"
+        },
+        "CapacityTarget": {
+            "Type": "Number",
+            "Description": "The desired number of instances in the cluster."
+        },
+        "CapacityMin": {
+            "Type": "Number",
+            "Description": "The minimum number of instances in the cluster."
+        },
+        "CapacityMax": {
+            "Type": "Number",
+            "Description": "The maximum number of instances in the cluster."
+        },
+        "OnDemandInstanceType": {
+            "Type": "String",
+            "Default": "c4.large",
+            "AllowedValues": [
+                "t1.micro",
+                "t2.nano",
+                "t2.micro",
+                "t2.small",
+                "t2.medium",
+                "t2.large",
+                "m1.small",
+                "m1.medium",
+                "m1.large",
+                "m1.xlarge",
+                "m2.xlarge",
+                "m2.2xlarge",
+                "m2.4xlarge",
+                "m3.medium",
+                "m3.large",
+                "m3.xlarge",
+                "m3.2xlarge",
+                "m4.large",
+                "m4.xlarge",
+                "m4.2xlarge",
+                "m4.4xlarge",
+                "m4.10xlarge",
+                "c1.medium",
+                "c1.xlarge",
+                "c3.large",
+                "c3.xlarge",
+                "c3.2xlarge",
+                "c3.4xlarge",
+                "c3.8xlarge",
+                "c4.large",
+                "c4.xlarge",
+                "c4.2xlarge",
+                "c4.4xlarge",
+                "c4.8xlarge",
+                "g2.2xlarge",
+                "g2.8xlarge",
+                "r3.large",
+                "r3.xlarge",
+                "r3.2xlarge",
+                "r3.4xlarge",
+                "r3.8xlarge",
+                "i2.xlarge",
+                "i2.2xlarge",
+                "i2.4xlarge",
+                "i2.8xlarge",
+                "d2.xlarge",
+                "d2.2xlarge",
+                "d2.4xlarge",
+                "d2.8xlarge",
+                "hi1.4xlarge",
+                "hs1.8xlarge",
+                "cr1.8xlarge",
+                "cc2.8xlarge",
+                "cg1.4xlarge"
+            ],
+            "ConstraintDescription": "must be a valid EC2 instance type",
+            "Description": "The On-Demand Instance type to fall back to."
+        },
+        "SpotInstancesType": {
+            "Type": "CommaDelimitedList",
+            "Default": "c4.large,c5.large",
+            "Description": "A comma-separated list of Spot Instances that are available to the Elastigroup."
+        },
+        "VPC": {
+            "Type": "AWS::EC2::VPC::Id",
+            "Description": "The VPC for the Elastigroup."
+        },
+        "AvailabilityZones": {
+            "Type": "List<AWS::EC2::AvailabilityZone::Name>",
+            "Description": "The Availability Zones for the cluster."
+        },
+        "SubnetIds": {
+            "Type": "List<AWS::EC2::Subnet::Id>",
+            "Description": "Provde Subnet IDs for the Cluster (Must be from selected VPC"
+        },
+        "DetailedMonitoring": {
+            "Type": "String",
+            "AllowedValues": [
+                "True",
+                "False"
+            ],
+            "Default": "False",
+            "Description": "Choose False to disable detailed CloudWatch monitoring."
+        },
+        "KeyName": {
+            "Description": "Provide an existing EC2 KeyPair to enable SSH access to the instances",
+            "Type": "AWS::EC2::KeyPair::KeyName",
+            "ConstraintDescription": "Must be the name of an existing EC2 KeyPair."
+        },
+        "ExistingNodesSecurityGroupsIds": {
+            "Type": "List<AWS::EC2::SecurityGroup::Id>",
+            "Default": "",
+            "Description": "A comma-separated list of exsiting security group IDs."
+        },
+        "NewOrExistingNodesSG": {
+            "Type": "String", 
+            "Default": "New", 
+            "Description": "New or existing EKS Nodes Security Group", 
+            "AllowedValues": [
+                "New", 
+                "Existing"
+            ]
+        }, 
+        "ProductType": {
+            "Type": "String",
+            "AllowedValues": [
+                "Linux/UNIX",
+                "SUSE Linux",
+                "Windows"
+            ],
+            "Default": "Linux/UNIX",
+            "Description": "The operating system for the instances."
+        },
+        "EKSName": {
+            "Description": "A name for the Amazon EKS cluster.",
+            "Type": "String"
+        },
+        "EKSVersion": {
+            "Description": "Amazon EKS Version.",
+            "Type": "String",
+            "Default": "1.10"
+        },
+        "AutoScalerEnable": {
+            "Description": "Choose False to disable the Spotinst autoscaler.",
+            "Type": "String",
+            "Default": "true",
+            "AllowedValues": [
+                "true",
+                "false"
+            ]
+        },
+        "AutoScalerCooldown": {
+            "Description": "The time, in seconds, between scaling activities (ignore if not using the autoscaler).",
+            "Type": "String",
+            "Default": "180"
+        },
+        "AutoScalerEvaluationPeriods": {
+            "Description": "The number of consecutive periods that should pass before scaling down (ignore if not using the autoscaler).",
+            "Type": "String",
+            "Default": "3"
+        },
+        "AutoScalerHeadroomUnitCount": {
+            "Description": "The number of Headroom units to keep available at all times (ignore if not using the autoscaler).",
+            "Type": "String",
+            "Default": "0"
+        },
+        "AutoScalerHeadroomCPU": {
+            "Description": "The amount of CPU units reserved in each Headroom unit (ignore if not using the autoscaler).",
+            "Type": "String",
+            "Default": "0"
+        },
+        "AutoScalerHeadroomRAM": {
+            "Description": "The amount in memory (in MB) reserved in each Headroom unit (ignore if not using the autoscaler).",
+            "Type": "String",
+            "Default": "0"
+        },
+        "NewEKS": {
+            "Description": "Use an existing Amazon EKS cluster or create a new one.",
+            "Type": "String",
+            "AllowedValues": [
+                "New Cluster",
+                "Existing Cluster"
+            ],
+            "Default": "New Cluster"
+        },
+        "NewOrExistingRole": {
+            "Type": "String", 
+            "Default": "New", 
+            "Description": "New Node Instance Profile Role for EKS Nodes existing one", 
+            "AllowedValues": [
+                "New", 
+                "Existing"
+            ]
+        },
+        "EKSAMIType": {
+            "Type": "String", 
+            "Default": "Regular", 
+            "Description": "Use Regaulr or GPU AMI for nodes (GPU AMI Supports only p2 and p3 instance", 
+            "AllowedValues": [
+                "Regular", 
+                "GPU"
+            ]
+        }, 
+        "ProfileRole": {
+            "Type": "String", 
+            "Description": "If Using an Existing Instance Profile, provide its ARN"
+        },
+        "BootstrapArguments": {
+            "Description": "Arguments to pass to the bootstrap script. See files/bootstrap.sh in https://github.com/awslabs/amazon-eks-ami", 
+            "Default": "", 
+            "Type": "String"
+        },
+        "ExistingControlPlaneSecurityGroup": {
+            "Type": "List<AWS::EC2::SecurityGroup::Id>",
+            "Default": "",
+            "Description": "EKS cluster control plane security group ID (if creating new security group for nodes with existing EKS Cluster)"
+        },
+        "QSS3BucketName": {
+            "AllowedPattern": "^[0-9a-zA-Z]+([0-9a-zA-Z-]*[0-9a-zA-Z])*$",
+            "ConstraintDescription": "Quick Start bucket name can include numbers, lowercase letters, uppercase letters, and hyphens (-). It cannot start or end with a hyphen (-).",
+            "Default": "aws-quickstart",
+            "Description": "S3 bucket name for the Quick Start assets. Quick Start bucket name can include numbers, lowercase letters, uppercase letters, and hyphens (-). It cannot start or end with a hyphen (-).",
+            "Type": "String"
+        },
+        "QSS3KeyPrefix": {
+            "AllowedPattern": "^[0-9a-zA-Z-/]*$",
+            "ConstraintDescription": "Quick Start key prefix can include numbers, lowercase letters, uppercase letters, hyphens (-), and forward slash (/).",
+            "Default": "quickstart-spotinst-eks/",
+            "Description": "S3 key prefix for the Quick Start assets. Quick Start key prefix can include numbers, lowercase letters, uppercase letters, hyphens (-), and forward slash (/).",
+            "Type": "String"
+        }
+    },
+    "Mappings": {
+        "AWSRegionToAMI": {
+            "AMI": {
+                "AMZEKSOTP": "amazon-eks-node-v24"
+            },
+            "us-east-1": {
+                "AMI": "ami-0440e4f6b9713faf6"
+            },
+            "us-west-2": {
+                "AMI": "ami-0a54c984b9f908c81"
+            },
+            "eu-west-1": {
+                "AMI": "ami-0c7a4976cb6fafd3a"
+            }
+        },
+        "AWSRegionToAMIGPU": {
+            "AMI": {
+                "AMZEKSOTP": "amazon-eks-gpu-node-v24"
+            },
+            "us-east-1": {
+                "AMI": "ami-058bfb8c236caae89"
+            },
+            "us-west-2": {
+                "AMI": "ami-0731694d53ef9604b"
+            },
+            "eu-west-1": {
+                "AMI": "ami-0706dc8a5eed2eed9"
+            }
+        }
+    },
+    "Conditions": {
+        "CreateEKSCluster": {
+            "Fn::Equals": [
+                {
+                    "Ref": "NewEKS"
+                },
+                "New Cluster"
+            ]
+        },
+        "NewRole": {
+            "Fn::Equals": [
+                {
+                    "Ref": "NewOrExistingRole"
+                }, 
+                "New"
+            ]
+        },
+        "NewSG": {
+            "Fn::Equals": [
+                {
+                    "Ref": "NewOrExistingNodesSG"
+                }, 
+                "New"
+            ]
+        },
+        "AMIType": {
+            "Fn::Equals": [
+                {
+                    "Ref": "EKSAMIType"
+                }, 
+                "GPU"
+            ]
+        }
+
+    },
+    "Resources": {
+        "LambdaStack": {
+            "Type": "AWS::CloudFormation::Stack",
+            "Properties": {
+                "TemplateURL": {
+                    "Fn::Sub": "https://${QSS3BucketName}.s3.amazonaws.com/${QSS3KeyPrefix}templates/copy_lambda.template"
+                },
+                "Parameters": {
+                    "QSS3BucketName": {
+                        "Ref": "QSS3BucketName"
+                    },
+                    "QSS3KeyPrefix": {
+                        "Ref": "QSS3KeyPrefix"
+                    }
+                }
+            }
+        },
+        "EKSIAMRole": {
+            "Condition": "CreateEKSCluster",
+            "Type": "AWS::IAM::Role", 
+            "Properties": {
+                "AssumeRolePolicyDocument": {
+                    "Version": "2012-10-17", 
+                    "Statement": [
+                        {
+                            "Effect": "Allow", 
+                            "Principal": {
+                                "Service": [
+                                    "eks.amazonaws.com"
+                                ]
+                            }, 
+                            "Action": [
+                                "sts:AssumeRole"
+                            ]
+                        }
+                    ]
+                }, 
+                "ManagedPolicyArns": [
+                    "arn:aws:iam::aws:policy/AmazonEKSClusterPolicy", 
+                    "arn:aws:iam::aws:policy/AmazonEKSServicePolicy"
+                ], 
+                "Path": "/", 
+                "RoleName": {
+                    "Fn::Sub": "${EKSName}-Role"
+                }
+            }
+        },
+        "ControlPlaneSecurityGroup": {
+            "Type": "AWS::EC2::SecurityGroup",
+            "Condition": "CreateEKSCluster", 
+            "Properties": {
+                "Tags": [
+                    {
+                        "Key": "Name",
+                        "Value": "eks-control-plane-SG"
+                    },
+                    {
+                        "Key": {
+                            "Fn::Sub": "kubernetes.io/cluster/${EKSName}"
+                        }, 
+                        "Value": "owned"
+                    }
+                ],
+                "GroupDescription": "Cluster communication with worker nodes", 
+                "VpcId": {
+                    "Ref": "VPC"
+                }
+            }
+        }, 
+        "EKSCluster": {
+            "Type": "AWS::EKS::Cluster", 
+            "Condition": "CreateEKSCluster",
+            "Properties": {
+                "Name": {
+                    "Ref": "EKSName"
+                }, 
+                "Version": {
+                    "Ref": "EKSVersion"
+                }, 
+                "RoleArn": {
+                    "Fn::GetAtt": [
+                        "EKSIAMRole", 
+                        "Arn"
+                    ]
+                }, 
+                "ResourcesVpcConfig": {
+                    "SecurityGroupIds": [
+                        {
+                            "Ref": "ControlPlaneSecurityGroup"
+                        }
+                    ], 
+                    "SubnetIds": { 
+                        "Ref": "SubnetIds"
+                    }
+                }
+            }, 
+            "DependsOn": [
+                "EKSIAMRole",
+                "ControlPlaneSecurityGroup"
+            ]
+        }, 
+        "NodeInstanceProfile": {
+            "Type": "AWS::IAM::InstanceProfile", 
+            "Condition": "NewRole", 
+            "Properties": {
+                "Path": "/", 
+                "Roles": [
+                    {
+                        "Ref": "NodeInstanceRole"
+                    }
+                ]
+            },
+            "DependsOn": [
+                "NodeInstanceRole"
+            ]
+        }, 
+        "NodeInstanceRole": {
+            "Type": "AWS::IAM::Role", 
+            "Condition": "NewRole", 
+            "Properties": {
+                "AssumeRolePolicyDocument": {
+                    "Version": "2012-10-17", 
+                    "Statement": [
+                        {
+                            "Effect": "Allow", 
+                            "Principal": {
+                                "Service": [
+                                    "ec2.amazonaws.com"
+                                ]
+                            }, 
+                            "Action": [
+                                "sts:AssumeRole"
+                            ]
+                        }
+                    ]
+                }, 
+                "Path": "/", 
+                "ManagedPolicyArns": [
+                    "arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy", 
+                    "arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy", 
+                    "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
+                ]
+            }
+        },
+        "NodeSecurityGroup": {
+            "Type": "AWS::EC2::SecurityGroup",
+            "Condition": "NewSG",
+            "Properties": {
+                "GroupDescription": "Security group for all nodes in the cluster", 
+                "VpcId": {
+                    "Ref": "VPC"
+                }, 
+                "Tags": [
+                    {
+                        "Key": "Name",
+                        "Value": "eks-nodes-SG"
+                    },
+                    {
+                        "Key": {
+                            "Fn::Sub": "kubernetes.io/cluster/${EKSName}"
+                        }, 
+                        "Value": "owned"
+                    }
+                ]
+            }
+        }, 
+        "NodeSecurityGroupIngress": {
+            "Type": "AWS::EC2::SecurityGroupIngress",
+            "Condition": "NewSG", 
+            "DependsOn": "NodeSecurityGroup", 
+            "Properties": {
+                "Description": "Allow node to communicate with each other", 
+                "GroupId": {
+                    "Ref": "NodeSecurityGroup"
+                }, 
+                "SourceSecurityGroupId": {
+                    "Ref": "NodeSecurityGroup"
+                }, 
+                "IpProtocol": "-1", 
+                "FromPort": 0, 
+                "ToPort": 65535
+            }
+        }, 
+        "NodeSecurityGroupFromControlPlaneIngress": {
+            "Type": "AWS::EC2::SecurityGroupIngress", 
+            "Condition": "NewSG", 
+            "DependsOn": "NodeSecurityGroup", 
+            "Properties": {
+                "Description": "Allow worker Kubelets and pods to receive communication from the cluster control plane", 
+                "GroupId": {
+                    "Ref": "NodeSecurityGroup"
+                }, 
+                "SourceSecurityGroupId": {
+                    "Fn::If": [
+                        "CreateEKSCluster", 
+                        {
+                            "Ref": "ControlPlaneSecurityGroup"
+                        }, 
+                        {
+                            "Ref": "ExistingControlPlaneSecurityGroup"
+                        }
+                    ]    
+                }, 
+                "IpProtocol": "tcp", 
+                "FromPort": 1025, 
+                "ToPort": 65535
+            }
+        }, 
+        "ControlPlaneEgressToNodeSecurityGroup": {
+            "Type": "AWS::EC2::SecurityGroupEgress", 
+            "Condition": "NewSG", 
+            "DependsOn": "NodeSecurityGroup", 
+            "Properties": {
+                "Description": "Allow the cluster control plane to communicate with worker Kubelet and pods", 
+                "GroupId": {
+                    "Fn::If": [
+                        "CreateEKSCluster", 
+                        {
+                            "Ref": "ControlPlaneSecurityGroup"
+                        }, 
+                        {
+                            "Ref": "ExistingControlPlaneSecurityGroup"
+                        }
+                    ] 
+                }, 
+                "DestinationSecurityGroupId": {
+                    "Ref": "NodeSecurityGroup"
+                }, 
+                "IpProtocol": "tcp", 
+                "FromPort": 1025, 
+                "ToPort": 65535
+            }
+        }, 
+        "NodeSecurityGroupFromControlPlaneOn443Ingress": {
+            "Type": "AWS::EC2::SecurityGroupIngress", 
+            "Condition": "NewSG", 
+            "DependsOn": "NodeSecurityGroup", 
+            "Properties": {
+                "Description": "Allow pods running extension API servers on port 443 to receive communication from cluster control plane", 
+                "GroupId": {
+                    "Ref": "NodeSecurityGroup"
+                }, 
+                "SourceSecurityGroupId": {
+                    "Fn::If": [
+                        "CreateEKSCluster", 
+                        {
+                            "Ref": "ControlPlaneSecurityGroup"
+                        }, 
+                        {
+                            "Ref": "ExistingControlPlaneSecurityGroup"
+                        }
+                    ] 
+                }, 
+                "IpProtocol": "tcp", 
+                "FromPort": 443, 
+                "ToPort": 443
+            }
+        }, 
+        "ControlPlaneEgressToNodeSecurityGroupOn443": {
+            "Type": "AWS::EC2::SecurityGroupEgress", 
+            "Condition": "NewSG", 
+            "DependsOn": "NodeSecurityGroup", 
+            "Properties": {
+                "Description": "Allow the cluster control plane to communicate with pods running extension API servers on port 443", 
+                "GroupId": {
+                    "Fn::If": [
+                        "CreateEKSCluster", 
+                        {
+                            "Ref": "ControlPlaneSecurityGroup"
+                        }, 
+                        {
+                            "Ref": "ExistingControlPlaneSecurityGroup"
+                        }
+                    ] 
+                }, 
+                "DestinationSecurityGroupId": {
+                    "Ref": "NodeSecurityGroup"
+                }, 
+                "IpProtocol": "tcp", 
+                "FromPort": 443, 
+                "ToPort": 443
+            }
+        }, 
+        "ControlPlaneSecurityGroupIngress": {
+            "Type": "AWS::EC2::SecurityGroupIngress",
+            "Condition": "NewSG",  
+            "DependsOn": "NodeSecurityGroup", 
+            "Properties": {
+                "Description": "Allow pods to communicate with the cluster API Server", 
+                "GroupId": {
+                    "Fn::If": [
+                        "CreateEKSCluster", 
+                        {
+                            "Ref": "ControlPlaneSecurityGroup"
+                        }, 
+                        {
+                            "Ref": "ExistingControlPlaneSecurityGroup"
+                        }
+                    ] 
+                }, 
+                "SourceSecurityGroupId": {
+                    "Ref": "NodeSecurityGroup"
+                }, 
+                "IpProtocol": "tcp", 
+                "ToPort": 443, 
+                "FromPort": 443
+            }
+        }, 
+        "SpotinstElastigroup": {
+            "DependsOn": "LambdaStack",
+            "Type": "Custom::elasticgroup",
+            "Properties": {
+                "ServiceToken": {
+                    "Fn::GetAtt": [
+                        "LambdaStack",
+                        "Outputs.SpotinstLambda"
+                    ]
+                },
+                "accessToken": {
+                    "Ref": "AccessToken"
+                },
+                "accountId": {
+                    "Ref": "AccountID"
+                },
+                "group": {
+                    "name": {
+                        "Ref": "ElastigroupName"
+                    },
+                    "region": {
+                        "Ref": "AWS::Region"
+                    },
+                    "strategy": {
+                        "risk": {
+                            "Ref": "SpotPercentage"
+                        },
+                        "availabilityVsCost": {
+                            "Ref": "ClusterOrientation"
+                        }
+                    },
+                    "capacity": {
+                        "target": {
+                            "Ref": "CapacityTarget"
+                        },
+                        "minimum": {
+                            "Ref": "CapacityMin"
+                        },
+                        "maximum": {
+                            "Ref": "CapacityMax"
+                        }
+                    },
+                    "scaling": {},
+                    "compute": {
+                        "instanceTypes": {
+                            "ondemand": {
+                                "Ref": "OnDemandInstanceType"
+                            },
+                            "spot": {
+                                "Ref": "SpotInstancesType"
+                            }
+                        },
+                        "subnetIds": {
+                            "Ref": "SubnetIds"
+                        },
+                        "launchSpecification": {
+                            "tags": [
+                                {
+                                    "tagKey": "Name", 
+                                    "tagValue": {
+                                        "Fn::Sub": "${EKSName}-${ElastigroupName}-Node"
+                                    }
+                                }, 
+                                {
+                                    "tagKey": {
+                                        "Fn::Sub": "kubernetes.io/cluster/${EKSName}"
+                                    }, 
+                                    "tagValue": "owned"
+                                }
+                            ], 
+                            "monitoring": {
+                                "Ref": "DetailedMonitoring"
+                            },
+                            "imageId": {
+                                "Fn::If": [
+                                    "AMIType", 
+                                    {
+                                        "Fn::FindInMap": [
+                                            "AWSRegionToAMIGPU",
+                                            {
+                                                "Ref": "AWS::Region"
+                                            },
+                                            "AMI"
+                                        ]
+                                    }, 
+                                    {
+                                        "Fn::FindInMap": [
+                                            "AWSRegionToAMI",
+                                            {
+                                                "Ref": "AWS::Region"
+                                            },
+                                            "AMI"
+                                        ]
+                                    }
+                                ]
+                            },
+                            "keyPair": {
+                                "Ref": "KeyName"
+                            },
+                            "securityGroupIds": {
+                                "Fn::If": [
+                                    "NewSG", 
+                                    {
+                                        "Fn::GetAtt": [
+                                            "NodeSecurityGroup", 
+                                            "GroupId"
+                                        ]
+                                    }, 
+                                    {
+                                        "Ref": "ExistingNodesSecurityGroupsIds"
+                                    }
+                                ]
+                            },
+                            "iamRole": {
+                                "arn": {
+                                    "Fn::If": [
+                                        "NewRole", 
+                                        {
+                                            "Fn::GetAtt": [
+                                                "NodeInstanceProfile", 
+                                                "Arn"
+                                            ]
+                                        }, 
+                                        {
+                                            "Ref": "ProfileRole"
+                                        }
+                                    ]
+                                }
+                            }, 
+                            "userData": {
+                                "Fn::Base64": {
+                                    "Fn::Sub": "#!/bin/bash\nset -o xtrace\n/etc/eks/bootstrap.sh ${EKSName} ${BootstrapArguments}\n"
+                                }
+                            }
+                        },
+                        "product": {
+                            "Ref": "ProductType"
+                        }
+                    },
+                    "scheduling": {},
+                    "thirdPartiesIntegration": {
+                        "kubernetes": {
+                            "integrationMode": "pod", 
+                            "clusterIdentifier": {
+                                "Ref": "ElastigroupName"
+                            }, 
+                            "autoScale": {
+                                "isEnabled": {
+                                    "Ref": "AutoScalerEnable"
+                                },
+                                "cooldown": {
+                                    "Ref": "AutoScalerCooldown"
+                                },
+                                "down": {
+                                    "evaluationPeriods": {
+                                        "Ref": "AutoScalerEvaluationPeriods"
+                                    }
+                                },
+                                "headroom": {
+                                    "cpuPerUnit": {
+                                        "Ref": "AutoScalerHeadroomCPU"
+                                    },
+                                    "memoryPerUnit": {
+                                        "Ref": "AutoScalerHeadroomRAM"
+                                    },
+                                    "numOfUnits": {
+                                        "Ref": "AutoScalerHeadroomUnitCount"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "Outputs": {
+        "NodeInstanceRole": {
+            "Condition": "NewRole", 
+            "Description": "The node instance role", 
+            "Value": {
+                "Fn::GetAtt": [
+                    "NodeInstanceRole", 
+                    "Arn"
+                ]
+            }
+        },
+        "EKSCluster": {
+            "Description": "A reference to the EKS cluster",
+            "Value": {
+                "Ref": "EKSName"
+            }
+        },
+        "EKSarn": {
+            "Condition": "CreateEKSCluster",
+            "Description": "ARN of the EKS CLuster", 
+            "Value": {
+                "Fn::GetAtt": [
+                    "EKSCluster", 
+                    "Arn"
+                ]
+            }
+        }, 
+        "EKSca": {
+            "Condition": "CreateEKSCluster",
+            "Description": "certificate authority data of the EKS CLuster", 
+            "Value": {
+                "Fn::GetAtt": [
+                    "EKSCluster", 
+                    "CertificateAuthorityData"
+                ]
+            }
+        }, 
+        "EKSendpoint": {
+            "Condition": "CreateEKSCluster",
+            "Description": "api endpoint for the EKS CLuster", 
+            "Value": {
+                "Fn::GetAtt": [
+                    "EKSCluster", 
+                    "Endpoint"
+                ]
+            }
+        }
+    }
+}
