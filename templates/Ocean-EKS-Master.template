@@ -1,6 +1,6 @@
 {
     "AWSTemplateFormatVersion": "2010-09-09",
-    "Description": "EKS cluster and Spotinst Elastigroup for EKS nodes + VPC (1osj6tpb5) License: Apache 2.0 (Please do not remove) Oct,3,2018",
+    "Description": "EKS cluster and Spotinst Ocean for EKS nodes + VPC (1osj6tpb5) License: Apache 2.0 (Please do not remove) Oct,3,2018",
     "Metadata": {
         "AWS::CloudFormation::Interface": {
             "ParameterGroups": [
@@ -63,32 +63,12 @@
                 },
                 {
                     "Label": {
-                        "default": "Elastigroup configuration"
+                        "default": "Ocean configuration"
                     },
                     "Parameters": [
-                        "ElastigroupName",
-                        "ClusterOrientation",
-                        "SpotPercentage",
-                        "CapacityTarget",
-                        "CapacityMin",
-                        "CapacityMax",
-                        "OnDemandInstanceType",
-                        "SpotInstancesType",
-                        "DetailedMonitoring",
-                        "ProductType"
-                    ]
-                },
-                {
-                    "Label": {
-                        "default": "EKS autoscaler configuration"
-                    },
-                    "Parameters": [
-                        "AutoScalerEnable",
-                        "AutoScalerCooldown",
-                        "AutoScalerEvaluationPeriods",
-                        "AutoScalerHeadroomUnitCount",
-                        "AutoScalerHeadroomCPU",
-                        "AutoScalerHeadroomRAM"
+                        "OceanName",
+                        "ResourceLimitsCPU",
+                        "ResourceLimitsMemory"
                     ]
                 },
                 {
@@ -156,8 +136,8 @@
                 "RemoteAccessCIDR": {
                     "default": "Allowed bastion external access CIDR"
                 },
-                "ElastigroupName": {
-                    "default": "Elastigroup name"
+                "OceanName": {
+                    "default": "Ocean name"
                 },
                 "AccessToken": {
                     "default": "Spotinst Access Token"
@@ -165,59 +145,20 @@
                 "AccountID": {
                     "default": "Spotinst Account ID"
                 },
-                "ClusterOrientation": {
-                    "default": "Cluster orientation"
-                },
-                "SpotPercentage": {
-                    "default": "Spot Instances percentage"
-                },
-                "CapacityTarget": {
-                    "default": "Instances capacity target"
-                },
-                "CapacityMin": {
-                    "default": "Instances capacity minimum"
-                },
-                "CapacityMax": {
-                    "default": "Instances capacity maximum"
-                },
-                "OnDemandInstanceType": {
-                    "default": "On-Demand Instance type"
-                },
-                "SpotInstancesType": {
-                    "default": "Spot Instances type"
-                },
-                "DetailedMonitoring": {
-                    "default": "Detailed monitoring"
-                },
-                "ProductType": {
-                    "default": "Product type"
-                },
                 "EKSName": {
                     "default": "EKS name"
                 },
                 "EKSVersion": {
                     "default": "EKS Version"
                 },
-                "AutoScalerEnable": {
-                    "default": "Turn on EKS autoscaler"
-                },
-                "AutoScalerCooldown": {
-                    "default": "Autoscaler cooldown"
-                },
-                "AutoScalerEvaluationPeriods": {
-                    "default": "Autoscaler evaluation periods"
-                },
-                "AutoScalerHeadroomUnitCount": {
-                    "default": "Autoscaler Headroom units count"
-                },
-                "AutoScalerHeadroomCPU": {
-                    "default": "Autoscaler Headroom CPU"
-                },
-                "AutoScalerHeadroomRAM": {
-                    "default": "Autoscaler Headroom RAM"
-                },
                 "EKSAMIType": {
                     "default": "Regular or GPU EKS AMI"
+                },
+                "ResourceLimitsCPU": {
+                    "default": "CPU limit for ocean cluster nodes"
+                },
+                "ResourceLimitsMemory": {
+                    "default": "Memory limit for ocean cluster nodes"
                 },
                 "BootstrapArguments": {
                     "default": "Bootstrap Arguments For EKS nodes"
@@ -364,11 +305,12 @@
             "AllowedPattern": "^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\\/([0-9]|[1-2][0-9]|3[0-2]))$",
             "ConstraintDescription": "CIDR block parameter must be in the form x.x.x.x/x",
             "Description": "The CIDR IP range that is permitted to access the bastions. We recommend that you set this value to a trusted IP range.",
+            "Default": "0.0.0.0/0",
             "Type": "String"
         },
-        "ElastigroupName": {
+        "OceanName": {
             "Type": "String",
-            "Description": "Name for the Elastigroup."
+            "Description": "Name for the Ocean cluster."
         },
         "AccessToken": {
             "Type": "String",
@@ -378,121 +320,15 @@
             "Type": "String",
             "Description": "The Spotinst Account ID."
         },
-        "ClusterOrientation": {
-            "Type": "String",
-            "AllowedValues": [
-                "balanced",
-                "availabilityOriented",
-                "costOriented"
-            ],
-            "Default": "balanced",
-            "Description": "The cluster orientation."
-        },
-        "SpotPercentage": {
+        "ResourceLimitsCPU": {
             "Type": "Number",
-            "MinValue": "0",
-            "MaxValue": "100",
-            "Default": "100",
-            "Description": "The percentage of Spot Instances in the cluster.",
-            "ConstraintDescription": "Select a Number Between 0 and 100"
+            "Description": "Maximun Amount of CPU cores in the Cluster",
+            "Default": "2000"
         },
-        "CapacityTarget": {
+        "ResourceLimitsMemory": {
             "Type": "Number",
-            "Description": "The desired number of instances in the cluster."
-        },
-        "CapacityMin": {
-            "Type": "Number",
-            "Description": "The minimum number of instances in the cluster."
-        },
-        "CapacityMax": {
-            "Type": "Number",
-            "Description": "The maximum number of Instances in the cluster."
-        },
-        "OnDemandInstanceType": {
-            "Type": "String",
-            "Default": "c4.large",
-            "AllowedValues": [
-                "t1.micro",
-                "t2.nano",
-                "t2.micro",
-                "t2.small",
-                "t2.medium",
-                "t2.large",
-                "m1.small",
-                "m1.medium",
-                "m1.large",
-                "m1.xlarge",
-                "m2.xlarge",
-                "m2.2xlarge",
-                "m2.4xlarge",
-                "m3.medium",
-                "m3.large",
-                "m3.xlarge",
-                "m3.2xlarge",
-                "m4.large",
-                "m4.xlarge",
-                "m4.2xlarge",
-                "m4.4xlarge",
-                "m4.10xlarge",
-                "c1.medium",
-                "c1.xlarge",
-                "c3.large",
-                "c3.xlarge",
-                "c3.2xlarge",
-                "c3.4xlarge",
-                "c3.8xlarge",
-                "c4.large",
-                "c4.xlarge",
-                "c4.2xlarge",
-                "c4.4xlarge",
-                "c4.8xlarge",
-                "g2.2xlarge",
-                "g2.8xlarge",
-                "r3.large",
-                "r3.xlarge",
-                "r3.2xlarge",
-                "r3.4xlarge",
-                "r3.8xlarge",
-                "i2.xlarge",
-                "i2.2xlarge",
-                "i2.4xlarge",
-                "i2.8xlarge",
-                "d2.xlarge",
-                "d2.2xlarge",
-                "d2.4xlarge",
-                "d2.8xlarge",
-                "hi1.4xlarge",
-                "hs1.8xlarge",
-                "cr1.8xlarge",
-                "cc2.8xlarge",
-                "cg1.4xlarge"
-            ],
-            "ConstraintDescription": "must be a valid EC2 instance type",
-            "Description": "The On-Demand Instance type to fall back to."
-        },
-        "SpotInstancesType": {
-            "Type": "CommaDelimitedList",
-            "Default": "c4.large,c5.large",
-            "Description": "A comma-separated list of Spot Instances available to the Elastigroup."
-        },
-        "DetailedMonitoring": {
-            "Type": "String",
-            "AllowedValues": [
-                "True",
-                "False"
-            ],
-            "Default": "False",
-            "Description": "Choose False to disable detailed CloudWatch monitoring."
-        },
-        "ProductType": {
-            "Type": "String",
-            "AllowedValues": [
-                "Linux/UNIX",
-                "SUSE Linux",
-                "Windows"
-            ],
-            "Default": "Linux/UNIX",
-            "Description": "The operating system for the instances."
+            "Description": "Maximun Amount of Memory (Gib) in the Cluster",
+            "Default": "4000"
         },
         "EKSName": {
             "Description": "A name for the Amazon EKS cluster.",
@@ -500,42 +336,12 @@
         },
         "EKSVersion": {
             "Description": "Amazon EKS Version.",
-            "Type": "String",
-            "Default": "1.10"
-        },
-        "AutoScalerEnable": {
-            "Description": "Choose False to disable the Spotinst autoscaler.",
-            "Type": "String",
-            "Default": "true",
+            "Type": "String", 
             "AllowedValues": [
-                "true",
-                "false"
-            ]
-        },
-        "AutoScalerCooldown": {
-            "Description": "The time, in seconds, between scaling activities (ignore if not using the autoscaler).",
-            "Type": "String",
-            "Default": "180"
-        },
-        "AutoScalerEvaluationPeriods": {
-            "Description": "The number of consecutive periods that should pass before scaling down (ignore if not using the autoscaler).",
-            "Type": "String",
-            "Default": "3"
-        },
-        "AutoScalerHeadroomUnitCount": {
-            "Description": "The number of Headroom units to keep available at all times (ignore if not using the autoscaler).",
-            "Type": "String",
-            "Default": "0"
-        },
-        "AutoScalerHeadroomCPU": {
-            "Description": "The amount of CPU units reserved in each Headroom unit (ignore if not using the autoscaler).",
-            "Type": "String",
-            "Default": "0"
-        },
-        "AutoScalerHeadroomRAM": {
-            "Description": "The amount in memory (in MB) reserved in each Headroom unit (ignore if not using the autoscaler).",
-            "Type": "String",
-            "Default": "0"
+                "1.11", 
+                "1.10"
+            ], 
+            "Default": "1.11"
         },
         "EKSAMIType": {
             "Type": "String", 
@@ -684,7 +490,7 @@
             "Type": "AWS::CloudFormation::Stack",
             "Properties": {
                 "TemplateURL": {
-                    "Fn::Sub": "https://${QSS3BucketName}.s3.amazonaws.com/${QSS3KeyPrefix}templates/Elastigroup-EKS.template"
+                    "Fn::Sub": "https://${QSS3BucketName}.s3.amazonaws.com/${QSS3KeyPrefix}templates/Ocean-EKS.template"
                 },
                 "Parameters": {
                     "QSS3BucketName": {
@@ -706,34 +512,8 @@
                     "AccountID": {
                         "Ref": "AccountID"
                     },
-                    "ElastigroupName": {
-                        "Ref": "ElastigroupName"
-                    },
-                    "SpotPercentage": {
-                        "Ref": "SpotPercentage"
-                    },
-                    "ClusterOrientation": {
-                        "Ref": "ClusterOrientation"
-                    },
-                    "CapacityTarget": {
-                        "Ref": "CapacityTarget"
-                    },
-                    "CapacityMin": {
-                        "Ref": "CapacityMin"
-                    },
-                    "CapacityMax": {
-                        "Ref": "CapacityMax"
-                    },
-                    "OnDemandInstanceType": {
-                        "Ref": "OnDemandInstanceType"
-                    },
-                    "SpotInstancesType": {
-                        "Fn::Join" : [
-                        ",", 
-                        {
-                            "Ref": "SpotInstancesType"
-                        }
-                        ] 
+                    "OceanName": {
+                        "Ref": "OceanName"
                     },
                     "VPC": {
                         "Fn::GetAtt": [
@@ -796,32 +576,8 @@
                             ]
                         ]
                     },
-                    "DetailedMonitoring": {
-                        "Ref": "DetailedMonitoring"
-                    },
                     "KeyName": {
                         "Ref": "KeyPairName"
-                    },
-                    "ProductType": {
-                        "Ref": "ProductType"
-                    },
-                    "AutoScalerEnable": {
-                        "Ref": "AutoScalerEnable"
-                    },
-                    "AutoScalerCooldown": {
-                        "Ref": "AutoScalerCooldown"
-                    },
-                    "AutoScalerEvaluationPeriods": {
-                        "Ref": "AutoScalerEvaluationPeriods"
-                    },
-                    "AutoScalerHeadroomCPU": {
-                        "Ref": "AutoScalerHeadroomCPU"
-                    },
-                    "AutoScalerHeadroomRAM": {
-                        "Ref": "AutoScalerHeadroomRAM"
-                    },
-                    "AutoScalerHeadroomUnitCount": {
-                        "Ref": "AutoScalerHeadroomUnitCount"
                     },
                     "NewOrExistingNodesSG": "New",
                     "NewOrExistingRole": "New",

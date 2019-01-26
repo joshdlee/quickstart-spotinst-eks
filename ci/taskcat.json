@@ -32,7 +32,7 @@
         "ParameterValue": "0.0.0.0/0"
     },
     {
-        "ParameterKey": "ElastigroupName",
+        "ParameterKey": "OceanName",
         "ParameterValue": "$[taskcat_random-string]"
     },
     {
@@ -44,67 +44,19 @@
         "ParameterValue": "override"
     },
     {
-        "ParameterKey": "ClusterOrientation",
-        "ParameterValue": "balanced"
-    },
-    {
-        "ParameterKey": "SpotPercentage",
-        "ParameterValue": "100"
-    },
-    {
-        "ParameterKey": "CapacityTarget",
-        "ParameterValue": "1"
-    },
-    {
-        "ParameterKey": "CapacityMin",
-        "ParameterValue": "0"
-    },
-    {
-        "ParameterKey": "CapacityMax",
-        "ParameterValue": "2"
-    },
-    {
-        "ParameterKey": "OnDemandInstanceType",
-        "ParameterValue": "t2.micro"
-    },
-    {
-        "ParameterKey": "SpotInstancesType",
-        "ParameterValue": "m3.large,m4.large"
-    },
-    {
-        "ParameterKey": "DetailedMonitoring",
-        "ParameterValue": "False"
-    },
-    {
-        "ParameterKey": "ProductType",
-        "ParameterValue": "Linux/UNIX"
-    },
-    {
         "ParameterKey": "EKSName",
         "ParameterValue": "$[taskcat_random-string]"
     },
     {
         "ParameterKey": "EKSVersion",
-        "ParameterValue": "1.10"
+        "ParameterValue": "1.11"
     },
     {
-        "ParameterKey": "AutoScalerCooldown",
-        "ParameterValue": "180"
+        "ParameterKey": "ResourceLimitsCPU",
+        "ParameterValue": "2000"
     },
     {
-        "ParameterKey": "AutoScalerEvaluationPeriods",
-        "ParameterValue": "3"
-    },
-    {
-        "ParameterKey": "AutoScalerHeadroomUnitCount",
-        "ParameterValue": "0"
-    },
-    {
-        "ParameterKey": "AutoScalerHeadroomCPU",
-        "ParameterValue": "0"
-    },
-    {
-        "ParameterKey": "AutoScalerHeadroomRAM",
-        "ParameterValue": "0"
+        "ParameterKey": "ResourceLimitsMemory",
+        "ParameterValue": "4000"
     }
 ]
