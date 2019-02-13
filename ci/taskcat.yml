@@ -3,10 +3,9 @@ global:
   owner: yuval@spotinst.com
   qsname: quickstart-spotinst-eks
   regions:
-    - us-east-1
     - us-west-2
   reporting: true
 tests:
   spotinst:
     parameter_input: taskcat.json
-    template_file: Elastigroup-EKS-Master.template
+    template_file: Ocean-EKS-Master.template

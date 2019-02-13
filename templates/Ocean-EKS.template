@@ -108,9 +108,6 @@
                 "ResourceLimitsMemory": {
                     "default": "Memory limit for ocean cluster nodes"
                 },
-                "ExistingControlPlaneSecurityGroup": {
-                    "default": "Existing Cluster ControlPlane Security Group ID"
-                },
                 "QSS3BucketName": {
                     "default": "Quick Start S3 bucket name"
                 },
@@ -809,6 +806,13 @@
         }
     },
     "Outputs": {
+
+        "1UpdateKubeconfig": {
+            "Description": "Run this command to update kubectl config", 
+            "Value": {
+                "Fn::Sub": "aws eks update-kubeconfig --name ${EKSName}" 
+            }
+        },
         "NodeInstanceRole": {
             "Condition": "NewRole", 
             "Description": "The node instance role", 
