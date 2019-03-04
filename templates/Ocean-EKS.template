@@ -1,6 +1,6 @@
 {
     "AWSTemplateFormatVersion": "2010-09-09",
-    "Description": "EKS cluster and Spotinst Ocean for the EKS nodes (qs-1osj6tpba) License: Apache 2.0 (Please do not remove) Oct,3,201",
+    "Description": "EKS cluster and Spotinst Ocean for the EKS nodes (qs-1pcd8pgm7) License: Apache 2.0 (Please do not remove) March,4,2019",
     "Metadata": {
         "AWS::CloudFormation::Interface": {
             "ParameterGroups": [
