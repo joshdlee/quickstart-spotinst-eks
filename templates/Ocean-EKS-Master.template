@@ -520,14 +520,6 @@
                             "Outputs.VPCID"
                         ]
                     },
-                    "AvailabilityZones": {
-                        "Fn::Join": [
-                            ",",
-                            {
-                                "Ref": "AvailabilityZones"
-                            }
-                        ]
-                    },
                     "SubnetIds": {
                          "Fn::Join": [
                             ",",
