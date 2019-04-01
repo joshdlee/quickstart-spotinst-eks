@@ -36,6 +36,9 @@
                     },
                     "Parameters": [
                         "OceanName",
+                        "KeyName",
+                        "VPC",
+                        "SubnetIds",
                         "ResourceLimitsCPU",
                         "ResourceLimitsMemory"
                     ]
@@ -55,16 +58,13 @@
                     "default": "Ocean cluster name"
                 },
                 "AccessToken": {
-                    "default": "Spotinst Access Token"
+                    "default": "Spotinst access token"
                 },
                 "AccountID": {
-                    "default": "Spotinst Account ID"
+                    "default": "Spotinst account ID"
                 },
                 "VPC": {
                     "default": "VPC"
-                },
-                "AvailabilityZones": {
-                    "default": "Availability Zones"
                 },
                 "SubnetIds": {
                     "default": "Subnet IDs"
@@ -73,34 +73,34 @@
                     "default": "Key pair name"
                 },
                 "NewOrExistingNodesSG": {
-                    "default": "New or existing EKS Nodes Security Group"
+                    "default": "New or existing EKS nodes security group"
                 },
                 "ExistingNodesSecurityGroupsIds": {
-                    "default": "Existing Nodes Security group IDs"
+                    "default": "Existing nodes security group IDs"
                 },
                 "ExistingControlPlaneSecurityGroup": {
-                    "default": "Control Plane Security group"
+                    "default": "Control plane security group"
                 },
                 "EKSName": {
                     "default": "EKS name"
                 },
                 "EKSVersion": {
-                    "default": "EKS Version"
+                    "default": "EKS version"
                 },
                 "NewEKS": {
                     "default": "New or existing EKS cluster"
                 },
                 "NewOrExistingRole": {
-                    "default": "New or existing EKS Instance Profile Role"
+                    "default": "New or existing EKS instance profile role"
                 },
                 "ProfileRole": {
-                    "default": "Existing EKS Profile Role ARN"
+                    "default": "Existing EKS profile role ARN"
                 },
                 "EKSAMIType": {
                     "default": "Regular or GPU EKS AMI"
                 },
                 "BootstrapArguments": {
-                    "default": "Bootstrap Arguments For EKS nodes"
+                    "default": "Bootstrap arguments for EKS nodes"
                 },
                 "ResourceLimitsCPU": {
                     "default": "CPU limit for ocean cluster nodes"
@@ -120,7 +120,7 @@
     "Parameters": {
         "OceanName": {
             "Type": "String",
-            "Description": "Name of the Elastigroup."
+            "Description": "Name of the Ocean cluster."
         },
         "AccessToken": {
             "Type": "String",
@@ -144,13 +144,9 @@
             "Type": "AWS::EC2::VPC::Id",
             "Description": "The VPC for the Elastigroup."
         },
-        "AvailabilityZones": {
-            "Type": "List<AWS::EC2::AvailabilityZone::Name>",
-            "Description": "The Availability Zones for the cluster."
-        },
         "SubnetIds": {
             "Type": "List<AWS::EC2::Subnet::Id>",
-            "Description": "Provde Subnet IDs for the Cluster (Must be from selected VPC"
+            "Description": "Provde Subnet IDs for the Cluster (Must be from selected VPC)"
         },
         "KeyName": {
             "Description": "Provide an existing EC2 KeyPair to enable SSH access to the instances",
@@ -811,6 +807,24 @@
             "Description": "Run this command to update kubectl config", 
             "Value": {
                 "Fn::Sub": "aws eks update-kubeconfig --name ${EKSName}" 
+            }
+        },
+        "2UpdateConfigMap": {
+            "Description": "Run this command to create configmap to allow nodes to join the cluster", 
+            "Value": {
+                "Fn::Sub": "curl -O https://amazon-eks.s3-us-west-2.amazonaws.com/cloudformation/2019-01-09/aws-auth-cm.yaml; sed -i .bak 's/<ARN of instance role (not instance profile)>/${NodeInstanceRole.Arn}/' aws-auth-cm.yaml" 
+            }
+        },
+        "3ApplyConfigMap": {
+            "Description": "Run this command to apply the config map", 
+            "Value": {
+                "Fn::Sub": "kubectl apply -f aws-auth-cm.yaml" 
+            }
+        },
+        "4InstallSpotinstController": {
+            "Description": "Run this command to apply the config map", 
+            "Value": {
+                "Fn::Sub": "curl -fsSL http://spotinst-public.s3.amazonaws.com/integrations/kubernetes/cluster-controller/scripts/init.sh | SPOTINST_TOKEN=${AccessToken} SPOTINST_ACCOUNT=${AccountID} SPOTINST_CLUSTER_IDENTIFIER=${EKSName} bash" 
             }
         },
         "NodeInstanceRole": {

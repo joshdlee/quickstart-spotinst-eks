@@ -140,16 +140,16 @@
                     "default": "Ocean name"
                 },
                 "AccessToken": {
-                    "default": "Spotinst Access Token"
+                    "default": "Spotinst access token"
                 },
                 "AccountID": {
-                    "default": "Spotinst Account ID"
+                    "default": "Spotinst account ID"
                 },
                 "EKSName": {
                     "default": "EKS name"
                 },
                 "EKSVersion": {
-                    "default": "EKS Version"
+                    "default": "EKS version"
                 },
                 "EKSAMIType": {
                     "default": "Regular or GPU EKS AMI"
@@ -161,7 +161,7 @@
                     "default": "Memory limit for ocean cluster nodes"
                 },
                 "BootstrapArguments": {
-                    "default": "Bootstrap Arguments For EKS nodes"
+                    "default": "Bootstrap arguments for EKS nodes"
                 }
             }
         }
