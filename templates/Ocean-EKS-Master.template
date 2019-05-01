@@ -155,10 +155,10 @@
                     "default": "Regular or GPU EKS AMI"
                 },
                 "ResourceLimitsCPU": {
-                    "default": "CPU limit for ocean cluster nodes"
+                    "default": "CPU limit for Ocean cluster nodes"
                 },
                 "ResourceLimitsMemory": {
-                    "default": "Memory limit for ocean cluster nodes"
+                    "default": "Memory limit for Ocean cluster nodes"
                 },
                 "BootstrapArguments": {
                     "default": "Bootstrap arguments for EKS nodes"
@@ -345,7 +345,7 @@
         "EKSAMIType": {
             "Type": "String", 
             "Default": "Regular", 
-            "Description": "Use Regaulr or GPU AMI for nodes (GPU AMI Supports only p2 and p3 instance", 
+            "Description": "Use Regular or GPU AMI for nodes (GPU AMI Supports only p2 and p3 instance)", 
             "AllowedValues": [
                 "Regular", 
                 "GPU"
