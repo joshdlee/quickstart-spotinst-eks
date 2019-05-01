@@ -23,6 +23,15 @@
                 },
                 {
                     "Label": {
+                        "default": "Network configuration"
+                    },
+                    "Parameters": [
+                        "VPC",
+                        "SubnetIds"
+                    ]
+                },
+                {
+                    "Label": {
                         "default": "Spotinst configuration"
                     },
                     "Parameters": [
@@ -37,8 +46,6 @@
                     "Parameters": [
                         "OceanName",
                         "KeyName",
-                        "VPC",
-                        "SubnetIds",
                         "ResourceLimitsCPU",
                         "ResourceLimitsMemory"
                     ]
