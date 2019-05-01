@@ -514,6 +514,12 @@
                     "OceanName": {
                         "Ref": "OceanName"
                     },
+                    "ResourceLimitsCPU": {
+                        "Ref": "ResourceLimitsCPU"
+                    },
+                    "ResourceLimitsMemory": {
+                        "Ref": "ResourceLimitsMemory"
+                    },
                     "VPC": {
                         "Fn::GetAtt": [
                             "VPCStack",
