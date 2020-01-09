@@ -9,7 +9,7 @@
     },
     {
         "ParameterKey": "KeyPairName",
-        "ParameterValue": "yuval-west"
+        "ParameterValue": "taskcat-test"
     },
     {
         "ParameterKey": "NumberOfAZs",
@@ -29,7 +29,7 @@
     },
     {
         "ParameterKey": "RemoteAccessCIDR",
-        "ParameterValue": "0.0.0.0/0"
+        "ParameterValue": "10.0.0.0/16"
     },
     {
         "ParameterKey": "OceanName",
@@ -49,7 +49,7 @@
     },
     {
         "ParameterKey": "EKSVersion",
-        "ParameterValue": "1.11"
+        "ParameterValue": "1.14"
     },
     {
         "ParameterKey": "ResourceLimitsCPU",
