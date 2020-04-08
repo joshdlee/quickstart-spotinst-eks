@@ -1,0 +1,30 @@
+project:
+  name: quickstart-spotinst-eks
+  owner: yuval@spotinst.com
+  package_lambda: false
+  regions:
+  - us-west-2
+  s3_bucket: ''
+tests:
+  spotinst:
+    parameters:
+      AccessToken: override
+      AccountID: override
+      AvailabilityZones: $[taskcat_genaz_3]
+      BastionAMIOS: Amazon-Linux-HVM
+      BastionInstanceType: t2.micro
+      CreatePrivateSubnets: 'true'
+      EKSName: $[taskcat_random-string]
+      EKSVersion: '1.14'
+      KeyPairName: $[taskcat_getkeypair]
+      NumberOfAZs: '3'
+      OceanName: $[taskcat_random-string]
+      QSS3BucketName: $[taskcat_autobucket]
+      QSS3BucketRegion: $[taskcat_current_region]
+      RemoteAccessCIDR: 10.0.0.0/16
+      ResourceLimitsCPU: '2000'
+      ResourceLimitsMemory: '4000'
+    regions:
+    - us-west-2
+    s3_bucket: ''
+    template: templates/Ocean-EKS-Master.template.yaml

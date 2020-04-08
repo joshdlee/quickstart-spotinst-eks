@@ -58,5 +58,9 @@
     {
         "ParameterKey": "ResourceLimitsMemory",
         "ParameterValue": "4000"
+    },
+    {
+        "ParameterKey": "QSS3BucketRegion",
+        "ParameterValue": "$[taskcat_current_region]"
     }
 ]

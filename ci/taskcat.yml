@@ -8,4 +8,4 @@ global:
 tests:
   spotinst:
     parameter_input: taskcat.json
-    template_file: Ocean-EKS-Master.template
+    template_file: Ocean-EKS-Master.template.yaml
